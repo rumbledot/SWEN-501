@@ -1,0 +1,62 @@
+package ac.swen501.bram.BugWorld;
+
+public class HerbivoreBug extends Bug {
+
+	int targetX, targetY;
+	Boolean isHungry = false, haveTarget = false;
+
+	public HerbivoreBug(String name, char symbol, int x, int y, int energy, int ID, int width, int height) {
+		super("Herbivore", name, symbol, x, y, energy, ID, width, height);
+	}
+	
+	public Boolean isHungry() {
+		return isHungry;
+	}
+	
+	public Boolean haveTarget() {
+		return haveTarget;
+	}
+	
+	public void setTargetX(int x) {
+		this.targetX = x;
+		this.haveTarget = true;
+	}
+	
+	public void setTargetY(int y) {
+		this.targetY = y;
+		this.haveTarget = true;
+	}
+	
+	public void eatPlant(int quantity) {
+		this.energyLevel += quantity;
+		if (this.energyLevel >= this.energy) { this.energyLevel = this.energy; }
+	}
+	
+	@Override
+	public void move() {
+		this.energyLevel--;
+		if (this.energyLevel == this.energy / 2) {
+			isHungry = true;
+		} else if (this.energyLevel >= this.energy) {
+			isHungry = false; haveTarget = false;
+			this.energyLevel = this.energy;
+		}
+		if (isHungry & haveTarget) {
+			this.lastX = this.x;
+			if (this.x < targetX) {
+				this.x += this.dX;
+			} else if (this.x > targetX) {
+				this.x -= this.dX;
+			}
+
+			this.lastY = this.y;
+			if (this.y < targetY) {
+				this.y += this.dY;
+			} else if (this.y > targetY) {
+				this.y -= this.dY;
+
+			}
+		}
+	}
+
+}

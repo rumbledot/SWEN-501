@@ -1,0 +1,9 @@
+package ac.swen501.bram.BugWorld;
+
+public class Thing {
+	
+	public Thing() {
+		
+	}
+
+}

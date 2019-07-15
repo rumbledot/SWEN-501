@@ -1,0 +1,32 @@
+package ac.bram.RecursionTest;
+
+import java.util.ArrayList;
+
+public class Wagon <Q> {
+	
+	Q value;
+	Wagon<Q> next = null;
+	
+	public Wagon(Q val) {
+		this.value = val;
+	}
+	
+	public void addWagon(Wagon<Q> next) {
+		this.next = next;
+	}
+	
+	public Wagon<Q> getWagon() {
+		return next;
+	}
+	
+	public int size() {
+		if (this.getWagon() == null) return 1;
+		
+		return 1 + next.size();
+	}
+	
+	
+	public Q getValue() {
+		return value; 
+	}
+}

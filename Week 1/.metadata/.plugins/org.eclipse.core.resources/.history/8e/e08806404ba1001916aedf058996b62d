@@ -1,0 +1,5 @@
+package ac.swen501.bram.BugWorld;
+
+public class Plant extends Bug {
+
+}

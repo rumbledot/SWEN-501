@@ -1,0 +1,29 @@
+package ac.bram.RecursionTest;
+
+import java.util.ArrayList;
+
+public class Wagon <Q> extends Train {
+	
+	Q value;
+	ArrayList<Wagon<Q>> next = new ArrayList<>();
+	
+	public Wagon(Q val) {
+		this.value = val;
+	}
+	
+	public void addWagon(Wagon<Q> next) {
+		next.addWagon(next);
+	}
+	
+	public ArrayList<Wagon<Q>> getWagon() {
+		return next;
+	}
+	
+	public int size(Wagon<Q> wagon) {
+		for (Wagon<Q> w : wagon.getWagon()) {
+			w.size(w);
+			s++;
+		}
+		return s;
+	}
+}

@@ -1,0 +1,29 @@
+package ac.swen501.bram.BugWorld;
+
+public class Plant extends Bug {
+
+	int energyLevel;
+
+	public Plant (int x, int y, int ID, int width, int height) {
+		super("plant", "grass", '1', x, y, 9, ID, width, height);
+		this.energyLevel = energy;
+	}
+
+	@Override
+	public void move() {
+		if (this.energyLevel < this.energy) {
+			this.energyLevel++;
+		}
+	}
+	
+	public void getEaten() {
+		if (this.energyLevel > 0) {
+			energyLevel--;
+		}
+	}
+	
+	public int getEnergyLevel() {
+		return this.energyLevel;
+	}
+
+}

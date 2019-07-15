@@ -1,0 +1,48 @@
+package ac.bram.RecursionTest;
+
+import java.util.ArrayList;
+
+public class Train <T> {
+
+	Wagon<T> head = null;
+
+	public Train () {
+
+	}
+
+	public void prepend(T x) {
+		Wagon<T> w = new Wagon<T>(x);
+		w.addWagon(head);
+		head = w;
+	}
+
+	public void prepend(Wagon<T> wagon) {
+		head = wagon;
+	}
+	
+	public void append(Wagon<T> wagon) {
+		
+	}
+
+	public void insert(Wagon<T> wagon, Wagon<T> newWagon) {
+		newWagon.addWagon(wagon.getNextWagon());
+		wagon.addWagon(newWagon);
+	}
+
+	public String printWagons(Wagon<T> wagon) {
+
+		if(wagon != null) {
+			//System.out.println(wagon.getValue());
+			return wagon.getValue() + " " + printWagons(wagon.getNextWagon());
+		}
+		return "End of Train";
+
+	}
+
+	public int size() {
+		if (head != null)
+			return head.size();
+		return 0;
+	}
+
+}

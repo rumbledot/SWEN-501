@@ -1,0 +1,329 @@
+package ac.swen501.bram.BugWorld;
+
+import java.util.ArrayList;
+
+public class World {
+	int worldWidth, worldHeight;
+	char[][] worldSpace; // the 'screen'
+	ArrayList<Bug> bugs = new ArrayList<Bug>();
+	ArrayList<Plant> plants = new ArrayList<Plant>();
+	ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
+
+	public World(int width, int height) {
+		this.worldWidth = width;
+		this.worldHeight = height;
+		this.worldSpace = new char[worldWidth][worldHeight];
+		bugs.clear();
+		plants.clear();
+		obstacles.clear();
+		this.clearWorld();
+	}
+
+	// adding stuffs into the world
+	public void addBug(Bug bug) {
+		int bugX = bug.getX();
+		int bugY = bug.getY();
+		if (this.worldSpace[bugX][bugY] == ' ') {
+			this.worldSpace[bugX][bugY] = bug.symbol();
+			bugs.add(bug);
+			//System.out.println("Call");
+		}
+		//System.out.println(bug.getX() + ", " + bug.getY() + " : " + bug.ID() + " " + bug.species());
+		//System.out.println(bugs.size());
+	}
+
+	public void addPlant(Plant plant) {
+		int plantX = plant.x();
+		int plantY = plant.y();
+		if (this.worldSpace[plantX][plantY] == ' ') {
+			this.worldSpace[plantX][plantY] = plant.symbol();
+			plants.add(plant);
+		}
+	}
+
+	public void addObstacle(Obstacle obstacle) {
+		int obsX = obstacle.x();
+		int obsY = obstacle.y();
+		if (this.worldSpace[obsX][obsY] == ' ') {
+			this.worldSpace[obsX][obsY] = Obstacle.symbol;
+			obstacles.add(obstacle);
+		}
+	}
+
+	/****************************
+	 * 							*
+	 * THE WORLD MAIN METHOD 	*
+	 * 							*
+	 ****************************/
+
+	public void drawWorld() {
+		this.clearWorld();
+		this.drawBorder();
+		this.updateWorld();
+		this.draw();
+	}
+
+	// clear the array and fill it with 'space' char
+	private void clearWorld() {
+		this.worldSpace = new char[worldWidth][worldHeight];
+		for (int j = 0; j < this.worldHeight; j++) {
+			for (int i = 0; i < this.worldWidth; i++) {
+				worldSpace[i][j] = ' ';
+			}
+		}
+	}
+
+	// draw the world's border
+	private void drawBorder() {
+		for (int j = 0; j < this.worldHeight; j++) {
+			worldSpace[0][j] = '|';
+			if (j == 0 || j == worldHeight - 1) {
+				for (int i = 0; i < worldWidth; i++) {
+					worldSpace[i][j] = '-';
+				}
+			}
+			worldSpace[worldWidth - 1][j] = '|';
+		}
+	}
+
+	// plot the objects and move the characters
+	private void updateWorld() {
+
+		// Put the Obstacle objects first
+		plottingObstacleObjects();
+
+		// Remove any dead Plant and Bug from ArrayList
+		removeDeadObjects();
+
+		// Sorted from the lowest food chain level
+		// Put the Plant objects
+		plottingPlantObjects();
+
+		// Herbivore bugs
+		plottingHerbivoreBug();
+
+		// Carnivore bugs
+		plottingCarnivoreBug();
+
+	}
+
+	// Create the world in the console
+	private void draw() {
+		for (int j = 0; j < this.worldHeight; j++) {
+			for (int i = 0; i < this.worldWidth; i++) {
+				System.out.print(worldSpace[i][j]);
+			}
+			System.out.println();
+		}
+	}
+
+	/****************************
+	 * 							*
+	 *  UPDATE WORLD METHODS	*
+	 * 							*
+	 ****************************/
+
+	// PLOTTING OBSTACLES
+	private void plottingObstacleObjects() {
+		for(Obstacle b : obstacles) {
+			worldSpace[b.x()][b.y()] = Obstacle.symbol;
+		}
+	}
+
+	// REMOVE ANY DEAD BUGS AND PLANTS
+	private void removeDeadObjects() {
+		//remove dead bug
+		int index = 0;
+		ArrayList<Integer> deadIndex = new ArrayList<Integer>();
+		for(Bug b : bugs) {
+			if (!b.isAlive()) {
+				deadIndex.add(index);
+			}
+			index++;
+		}
+		index = 0;
+		if (deadIndex.size() > 0) {
+			for (Integer i : deadIndex) {
+				index = i.intValue();
+				bugs.remove(index);
+			}
+		}
+
+		//remove dead plant
+		index = 0;
+		deadIndex = new ArrayList<Integer>();
+		for(Plant b : plants) {
+			if(!b.isAlive()) {
+				deadIndex.add(index);
+			}
+			index++;
+		}
+		index = 0;
+		if (deadIndex.size() > 0) {
+			for (Integer i : deadIndex) {
+				index = i.intValue();
+				plants.remove(index);
+			}
+		}
+	}
+
+	// PLOTTING PLANTS
+	private void plottingPlantObjects() {
+		for(Plant b : plants) {
+			b.grow();
+			worldSpace[b.x()][b.y()] = b.symbol();
+		}
+	}
+
+	// PLOTTING HERBIVORES
+	private void plottingHerbivoreBug() {
+		for (Bug b : bugs) {
+			if (b instanceof HerbivoreBug) {
+				//System.out.println("Herbi :" + b.species() + " " + b.ID() + " " + bugs.size() + " " + b.getX() + ", " + b.getY());
+				if (b.isHungry() && !b.haveTarget()) {
+					if (plants.size() > 0) {
+						int r = 3;
+						smellForPlant(b, r);
+					}
+				}
+				b.move();
+				//System.out.println(worldSpace[b.getX()][b.getY()]);
+				if (worldSpace[b.getX()][b.getY()] == ' ') {
+					//System.out.println("call 1");
+					worldSpace[b.getX()][b.getY()] = b.symbol();
+				} else if (Character.isDigit(worldSpace[b.getX()][b.getY()]) && b.isHungry()) {
+					//System.out.println("call 3");
+					Plant p = checkForPlantAt(b.getX(), b.getY());
+					b.eat(p.getEaten());
+
+					worldSpace[b.getLastX()][b.getLastY()] = b.symbol();
+					worldSpace[b.getX()][b.getY()] = '*';
+					b.setX(b.getLastX());
+					b.setY(b.getLastY());
+					b.noTarget();
+					b.notHungry();
+				} else {
+					//System.out.println("call 2");
+					worldSpace[b.getLastX()][b.getLastY()] = b.symbol();
+					b.setX(b.getLastX());
+					b.setY(b.getLastY());
+					b.goOtherWay();
+				}
+			}
+		}
+	}
+
+	private void smellForPlant(Bug bug, int r) {
+		/*
+		int sX = bug.getX() - r;
+		if(sX <= 1) {sX = 1;}
+		int sY = bug.getY() - r;
+		if(sY <= 1) {sY = 1;}
+		int eX = bug.getX() + r;
+		if(eX >= this.worldWidth - 1) {eX = this.worldWidth - 1;}
+		int eY = bug.getY() + r;
+		if(eY >= this.worldHeight - 1) {eY = this.worldHeight - 1;}*/
+		//int index = 0;
+		Plant closest = null;
+		ComparatorOfPlant comparePlant = new ComparatorOfPlant();
+		comparePlant.setBugX(bug.getX());
+		comparePlant.setBugY(bug.getY());
+		for (Plant p : plants) {
+			/*//System.out.println("Plant " + p.x() + ", " + p.y() + " by " + bug.symbol());
+			if (p.x() > sX && p.x() < eX &&
+					p.y() > sY && p.y() < eY && !p.isTargeted()) {
+				p.targeted();
+				bug.setTargetX(p.x());
+				bug.setTargetY(p.y());
+				//System.out.println("Target:" + p.x() + ", " + p.y() + " #" + index + " by " + bug.symbol());
+				break;
+			}
+			//index++;*/
+			if (closest == null) { closest = p; 
+			} 
+		}
+	}
+
+	private Plant checkForPlantAt(int x, int y) {
+		for(Plant p : plants) {
+			if (p.x == x && p.y == y) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+	// PLOTTING CARNIVORES
+	private void plottingCarnivoreBug() {
+		for (Bug b : bugs) {
+			if (b instanceof CarnivoreBug) {
+				//System.out.println("Carni :" + b.species() + " " + b.ID() + " " + bugs.size() + " " + b.getX() + ", " + b.getY());
+				if (b.isHungry() && !b.haveTarget()) {
+					int r = 8;
+					smellForPrey(b, r);
+				} else if (b.isHungry() && b.haveTarget()) {
+					Bug prey = ((CarnivoreBug) b).getPrey();
+					b.setTargetX(prey.getX());
+					b.setTargetY(prey.getY());
+					//System.out.println(prey.symbol() + " " + prey.getX() + ", " + prey.getY());
+				}
+				b.move();
+				if (worldSpace[b.getX()][b.getY()] == ' ') {
+					worldSpace[b.getX()][b.getY()] = b.symbol();
+				} else if (Character.isLowerCase(worldSpace[b.getX()][b.getY()]) && b.isHungry()) {
+					Bug p = checkForPreyAt(b.getX(), b.getY());
+					b.eat(p.getEaten());
+					//System.out.println(b.symbol() + " eat " + p.symbol());
+					worldSpace[b.getLastX()][b.getLastY()] = b.symbol();
+					worldSpace[b.getX()][b.getY()] = 'x';
+					b.setX(b.getLastX());
+					b.setY(b.getLastY());
+					b.noTarget();
+					b.notHungry();
+				} else {
+					worldSpace[b.getLastX()][b.getLastY()] = b.symbol();
+					b.setX(b.getLastX());
+					b.setY(b.getLastY());
+					b.goOtherWay();
+				}
+			}
+		}
+	}
+
+	private void smellForPrey (Bug bug, int r) {
+		int sX = bug.getX() - r;
+		if(sX <= 1) {sX = 1;}
+		int sY = bug.getY() - r;
+		if(sY <= 1) {sY = 1;}
+		int eX = bug.getX() + r;
+		if(eX >= this.worldWidth - 1) {eX = this.worldWidth - 1;}
+		int eY = bug.getY() + r;
+		if(eY >= this.worldHeight - 1) {eY = this.worldHeight - 1;}
+		//int index = 0;
+		for (Bug b : bugs) {
+			if (b instanceof HerbivoreBug) {
+				//System.out.println("Prey " + b.getX() + ", " + b.getY() + " : " + b.symbol());
+				if (b.getX() > sX && b.getX() < eX &&
+						b.getY() > sY && b.getY() < eY && !b.isTargeted()) {
+					b.targeted();
+					((CarnivoreBug)bug).setPrey(b);
+					bug.setTargetX(b.getX());
+					bug.setTargetY(b.getY());
+					//System.out.println("Target:" + b.getX() + ", " + b.getY() + " #" + index + " by " + bug.symbol());
+					break;
+				}
+			}
+			//index++;
+		}
+	}
+
+	private Bug checkForPreyAt(int x, int y) {
+		for(Bug p : bugs) {
+			if (p.getX() == x && p.getY() == y && p instanceof HerbivoreBug) {
+				return p;
+			}
+		}
+		return null;
+	}
+
+}

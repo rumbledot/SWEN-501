@@ -1,0 +1,8 @@
+package ac.swen501.bram.BugWorld;
+
+public class CarnivoreBug extends Bug {
+	
+	public CarnivoreBug(String name, char symbol, int x, int y, int energy, int ID, int width, int height) {
+		super("Carnivore", name, symbol, x, y, energy, ID, width, height);
+	}
+}

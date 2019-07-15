@@ -1,0 +1,13 @@
+package ac.swen501.bram.BugWorld;
+
+public class Obstacle {
+	
+	int x, y;
+	char symbol = '0';
+
+	public Obstacle (int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+}

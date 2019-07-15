@@ -1,0 +1,20 @@
+package ac.swen501.bram.BugWorld;
+
+public class Obstacle {
+	
+	int x, y;
+	static char symbol = 'Ø';
+
+	public Obstacle (int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+    public int y() {
+        return y;
+    }
+
+    public int x() {
+        return x;
+    }
+}

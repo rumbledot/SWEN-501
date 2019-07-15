@@ -1,0 +1,23 @@
+package ac.swen501.bram.BugWorld;
+
+import java.util.Comparator;
+
+public class ComparatorOfPlant implements Comparator<Plant>{
+
+	int bugX, bugY;
+	
+	@Override
+	public int compare(Plant o1, Plant o2) {
+		// TODO Auto-generated method stub
+	return 0;
+	}
+	
+	public void setBugX (int bugX) {
+		this.bugX = bugX;
+	}
+	
+	public void setBugY (int bugX) {
+		this.bugY = bugY;
+	}
+
+}

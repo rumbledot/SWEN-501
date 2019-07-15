@@ -1,0 +1,8 @@
+package ac.swen501.bram.BugWorld;
+
+public class Obstacle extends Bug {
+
+	public Obstacle (int x, int y, int ID, int width, int height) {
+		super("obstacle", "rock", '0', x, y, 9, ID, width, height);
+	}
+}

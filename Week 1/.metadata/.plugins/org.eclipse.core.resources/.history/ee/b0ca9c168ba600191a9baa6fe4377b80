@@ -1,0 +1,13 @@
+package ac.bram.RecursionTest;
+
+public class Tree {
+
+	ArrayList<String> children = new ArrayList<>();
+	
+	public Tree()
+	{
+		
+	}
+	
+	public 
+}

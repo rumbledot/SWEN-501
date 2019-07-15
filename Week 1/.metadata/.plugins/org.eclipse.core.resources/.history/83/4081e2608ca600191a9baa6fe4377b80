@@ -1,0 +1,19 @@
+package ac.bram.RecursionTest;
+
+import java.util.ArrayList;
+
+public class Tree {
+
+	ArrayList<Tree> children = new ArrayList<>();
+	Tree t;
+	String prefix = "Tree";
+	
+	public Tree()
+	{
+		children.add(t);
+	}
+	
+	public ArrayList<Tree> getChildren() {
+		return children;
+	}
+}

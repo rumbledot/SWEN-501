@@ -1,0 +1,110 @@
+package ac.swen501.bram.BugWorld;
+import java.util.ArrayList;
+import java.util.Random;
+
+public class EntryPoint {
+
+	enum bugSpecies { A, B, C, D };
+	int bugIndex = 0;
+	String symbolsHerbivore = "abcdefghijk";
+	String symbolsCarnivore = "LMNOPQRSTUV";
+	Long timerStart, timerEnd;
+	int worldWidth = 10, worldHeight = 10;
+	public World world;
+
+	public static void main(String[] args)
+	{
+		new EntryPoint();
+	}
+
+	public EntryPoint() {
+		this.createWorld();
+		this.updateWorld();
+	}
+
+	private void createWorld() {
+		world = new World(this.worldWidth, this.worldHeight);
+
+		this.addBugCarni();
+        this.addBugHerbi();
+        this.addBugHerbi();
+        this.addBugHerbi();
+        this.addPlant();
+        this.addObstacle();
+
+	}
+	
+	private void updateWorld() {
+		timerStart = System.currentTimeMillis();
+		int step = 0;
+		while (step < 100) {
+			timerEnd = System.currentTimeMillis() - timerStart;
+			if (timerEnd >= 1000) {
+				int Chance = (int)(Math.random() * 100);
+				if (Chance > 20 && Chance < 55) {
+                    this.addPlant();
+                } else if (Chance > 1 && Chance < 2) {
+                    this.addObstacle();
+                } else if (Chance > 55 && Chance < 80) {
+					this.addBugHerbi();
+				} else if (Chance > 80 && Chance < 83) {
+					this.addBugCarni();
+				}
+				world.drawWorld();
+				timerStart = System.currentTimeMillis();
+				step++;
+			}
+		}
+	}
+		
+	public void addPlant() {
+		int x = (int) (Math.random() * this.worldWidth - 1);
+		if (x <= 1) { x = 1; }
+		if (x >= this.worldWidth - 1) { x = this.worldWidth - 1; }
+		int y = (int) (Math.random() * this.worldHeight - 1);
+		if (y <= 1) { y = 1; }
+		if (y >= this.worldHeight - 1) { y = this.worldHeight - 1; }
+		Plant b = new Plant(x, y);
+		world.addPlant(b);
+	}
+	
+	public void addObstacle() {
+		int x = (int) (Math.random() * this.worldWidth - 1);
+		if (x <= 0) { x = 1; }
+		if (x >= this.worldWidth - 1) { x = this.worldWidth - 1; }
+		int y = (int) (Math.random() * this.worldHeight - 1);
+		if (y <= 0) { y = 1; }
+		if (y >= this.worldHeight - 1) { y = this.worldHeight - 1; }
+		Obstacle b = new Obstacle(x, y);
+		world.addObstacle(b);
+	}
+	
+	public void addBugHerbi() {
+		String name = "bug " + bugIndex;
+		int x = (int) (Math.random() * this.worldWidth - 1);
+		if (x <= 0) { x = 1; }
+		int y = (int) (Math.random() * this.worldHeight - 1);
+		if (y <= 0) { y = 1; }
+		int energy = (int) (Math.random() * 20) + 10;
+		char sym = symbolsHerbivore.charAt(new Random().nextInt(symbolsHerbivore.length()));
+
+		Bug b = new HerbivoreBug(name, sym, x, y, energy, bugIndex, worldWidth, worldHeight);
+		bugIndex++;
+		//System.out.println("Add bug called");
+		world.addBug(b);
+	}
+	
+	public void addBugCarni() {
+		String name = "bug " + bugIndex;
+		int x = (int) (Math.random() * this.worldWidth - 1);
+		if (x <= 0) { x = 1; }
+		int y = (int) (Math.random() * this.worldHeight - 1);
+		if (y <= 0) { y = 1; }
+		int energy = (int) (Math.random() * 80) + 10;
+		char sym = symbolsCarnivore.charAt(new Random().nextInt(symbolsCarnivore.length()));
+
+		Bug b = new CarnivoreBug(name, sym, x, y, energy, bugIndex, worldWidth, worldHeight);
+		bugIndex++;
+		world.addBug(b);
+	}
+}

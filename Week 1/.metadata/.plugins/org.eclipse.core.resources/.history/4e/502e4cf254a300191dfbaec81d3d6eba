@@ -1,0 +1,66 @@
+package ac.swen501.bram.BugWorld;
+
+public class CarnivoreBug extends Bug {
+	
+	Bug target;
+	
+	public CarnivoreBug(String name, char symbol, int x, int y, int energy, int ID, int width, int height) {
+		super("Carnivore", name, symbol, x, y, energy, ID, width, height);
+	}
+	
+	// Carnivore bug has different style of HUNTING, move twice as fast when hunting
+	@Override
+	public void move() {
+		//System.out.println(this.energyLevel + " : " + x + "," + y + " : " + symbol + " speed :" + dX + ", " + dY);
+		//System.out.println(isHungry + " " + haveTarget + " " + isAlive);
+		//System.out.println(targetX + ", " + targetY);
+		this.energyLevel--; // move drain energy
+		if (this.energyLevel <= (this.energy / 4) * 3) { // get hungry when energy level drop to 3/4 its time
+			isHungry = true;
+		} else if (this.energyLevel >= this.energy) { // check if energy level higher then default energy after eating
+			isHungry = false; haveTarget = false;
+			this.energyLevel = this.energy;
+		}
+		if (this.energyLevel <= 0) { // when energy drop below or 0 then it dies, flag for removal
+			isAlive = false;
+		}
+		if (isHungry & haveTarget) { // movement behavior when the bug is hungry and have targeted a food
+			this.lastX = this.x;
+			this.lastY = this.y;
+			if (this.x < targetX) {
+				this.x += Math.abs(this.dX * 2);
+			} else if (this.x > targetX) {
+				this.x -= Math.abs(this.dX * 2);
+			} else {
+				this.x += 0;
+			}
+			if (this.y < targetY) {
+				this.y += Math.abs(this.dY);
+			} else if (this.y > targetY) {
+				this.y -= Math.abs(this.dY);
+			} else {
+				this.y += 0;
+			}
+
+		} else { // movement behavior when the bug is hungry and don't have targeted a food
+			this.lastX = this.x; // or when the bug is not hungry
+			this.x += this.dX;
+			if(this.x < 1 || this.x >= this.worldWidth - 1) {
+				this.dX = -this.dX;
+				this.x += this.dX;
+			}
+
+			this.lastY = this.y;
+			this.y += this.dY;
+			if(this.y < 1 || this.y >= this.worldHeight - 1) {
+				this.dY = -this.dY;
+				this.y += this.dY;
+			}
+		}
+	}
+	
+	public void setTarget(Bug bug) {
+		target = bug;
+	}
+	
+}

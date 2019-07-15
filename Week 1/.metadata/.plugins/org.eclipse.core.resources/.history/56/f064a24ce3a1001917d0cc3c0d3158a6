@@ -1,0 +1,40 @@
+package ac.swen501.bram.BugWorld;
+
+public class HerbivoreBug extends Bug {
+
+	int targetX, targetY;
+	Boolean isHungry = false;
+
+	public HerbivoreBug(String name, char symbol, int x, int y, int energy, int ID, int width, int height) {
+		super("Herbivore", name, symbol, x, y, energy, ID, width, height);
+	}
+	
+	public Boolean isHungry() {
+		return isHungry;
+	}
+	
+	@Override
+	public void move() {
+		if (this.energyLevel == this.energy / 2) {
+			isHungry = true;
+		}
+		if (isHungry) {
+			this.energyLevel--;
+			this.lastX = this.x;
+			if (this.x < targetX) {
+				this.x += this.dX;
+			} else if (this.x > targetX) {
+				this.x -= this.dX;
+			}
+
+			this.lastY = this.y;
+			if (this.y < targetY) {
+				this.y += this.dY;
+			} else if (this.y > targetY) {
+				this.y -= this.dY;
+
+			}
+		}
+	}
+
+}

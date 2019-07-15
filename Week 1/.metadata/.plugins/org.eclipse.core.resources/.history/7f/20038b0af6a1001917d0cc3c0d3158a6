@@ -1,0 +1,100 @@
+package ac.swen501.bram.BugWorld;
+
+public class HerbivoreBug extends Bug {
+
+	int targetX, targetY;
+	Boolean isHungry = false, haveTarget = false, isDead = false;
+
+	public HerbivoreBug(String name, char symbol, int x, int y, int energy, int ID, int width, int height) {
+		super("Herbivore", name, symbol, x, y, energy, ID, width, height);
+	}
+	
+	public Boolean isHungry() {
+		return isHungry;
+	}
+	
+	public Boolean haveTarget() {
+		return haveTarget;
+	}
+	
+	public Boolean isDead() {
+		return isDead;
+	}
+	
+	public void setTargetX(int x) {
+		this.targetX = x;
+		this.haveTarget = true;
+	}
+	
+	public void setTargetY(int y) {
+		this.targetY = y;
+		this.haveTarget = true;
+	}
+	
+	public void eatPlant(int quantity) {
+		this.energyLevel += quantity;
+		if (this.energyLevel >= this.energy) { this.energyLevel = this.energy; }
+		this.isHungry = false; this.haveTarget = false;
+	}
+	
+	@Override
+	public void move() {
+		System.out.println(energyLevel + " : " + x + "," + y + " : " + symbol);
+
+		this.energyLevel--;
+		if (this.energyLevel == (this.energy / 4) * 3) {
+			isHungry = true;
+		} else if (this.energyLevel >= this.energy) {
+			isHungry = false; haveTarget = false;
+			this.energyLevel = this.energy;
+		} else if (this.energyLevel <= 0) { 
+			isDead = true;
+		}
+		if (isHungry & haveTarget) {
+			this.lastX = this.x;
+			if (this.x < targetX) {
+				this.x += Math.abs(this.dX);
+			} else if (this.x > targetX) {
+				this.x -= this.dX;
+			}
+
+			this.lastY = this.y;
+			if (this.y < targetY) {
+				this.y += Math.abs(this.dY);
+			} else if (this.y > targetY) {
+				this.y -= this.dY;
+
+			}
+			
+		} else {
+			this.lastX = this.x;
+			this.x += this.dX;
+			if (this.x <= 1 || this.x >= this.worldWidth - 1) {
+				this.dX = -this.dX;
+				this.x = this.lastX;
+				this.x += this.dX;
+			}
+			this.lastY = this.y;
+			this.y += this.dY;
+			if (this.y <= 0 || this.y >= this.worldHeight - 1) {
+				this.y = this.lastY;
+				this.dY = -this.dY;
+				this.y += this.dY;
+			}
+		}
+		
+		if(this.x < 1) {
+			this.x = 1; 
+		}
+		if(this.x > worldWidth - 1) {
+			this.x = this.lastX; 
+		}
+		if(this.y < 1) {
+			this.y = 1; 
+		}
+		if(this.y > worldHeight - 1) {
+			this.y = this.lastY; 
+		}
+	}
+
+}

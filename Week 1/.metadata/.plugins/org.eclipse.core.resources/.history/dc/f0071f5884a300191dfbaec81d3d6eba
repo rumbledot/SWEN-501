@@ -1,0 +1,29 @@
+package ac.swen501.bram.BugWorld;
+
+import java.util.Comparator;
+
+public class ComparatorOfPlant implements Comparator<Plant> {
+
+	int bugX = 0, bugY = 0;
+	
+	@Override
+	public int compare(Plant o1, Plant o2) {
+		int o1Dist = Math.abs(o1.x() - bugX) + Math.abs(o1.y() - bugY);
+		int o2Dist = Math.abs(o2.x() - bugX) + Math.abs(o2.y() - bugY);
+		if (o1Dist > o2Dist) {
+			return 1;
+		} else if (o1Dist > o2Dist) {
+			return -1;
+		}
+	return 0;
+	}
+	
+	public void setBugX (int bugX) {
+		this.bugX = bugX;
+	}
+	
+	public void setBugY (int bugX) {
+		this.bugY = bugY;
+	}
+
+}

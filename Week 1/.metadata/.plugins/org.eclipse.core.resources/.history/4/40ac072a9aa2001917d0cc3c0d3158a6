@@ -1,0 +1,36 @@
+package ac.swen501.bram.BugWorld;
+
+public class Plant {
+
+	int growLevel = 1, growMax = 9;
+	int x, y;
+	Boolean isAlive = true;
+	char symbol = '1';
+
+	public Plant (int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	public void grow() {
+		if (this.growLevel < this.growMax) {
+			this.growLevel++;
+		}
+	}
+	
+	public int getEaten() {
+			int giveEnergy = growLevel;
+			growLevel = 1;
+			isAlive = false;
+			return giveEnergy;
+	}
+	
+	public int getEnergyLevel() {
+		return this.growLevel;
+	}
+
+	public char symbol() {
+		symbol = (char)(this.growLevel + '0');
+		return this.symbol;
+	}
+}

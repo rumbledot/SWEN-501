@@ -1,0 +1,15 @@
+package ac.swen501.bram.BugWorld;
+
+public class HerbivoreBug extends Bug {
+
+	public HerbivoreBug(String name, char symbol, int x, int y, int energy, int ID, int width, int height) {
+		super("Herbivore", name, symbol, x, y, energy, ID, width, height);
+	}
+	/*
+	public void eatPlant(int quantity) {
+		this.energyLevel += quantity;
+		if (this.energyLevel >= this.energy) { this.energyLevel = this.energy; }
+		this.isHungry = false; this.haveTarget = false;
+	}*/
+
+}

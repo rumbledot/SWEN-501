@@ -1,0 +1,15 @@
+package ac.swen501.bram.BugWorld;
+
+import java.util.Comparator;
+
+public class ComparatorOfPlant implements Comparator<Plant>{
+
+	@Override
+	public int compare(Plant o1, Plant o2) {
+		// TODO Auto-generated method stub
+	return 0;
+	}
+	
+	
+
+}

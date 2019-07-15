@@ -1,0 +1,8 @@
+package ac.swen501.bram.BugWorld;
+
+public class Obstacle {
+
+	public Obstacle () {
+		
+	}
+}

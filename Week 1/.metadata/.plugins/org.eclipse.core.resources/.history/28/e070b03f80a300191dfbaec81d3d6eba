@@ -1,0 +1,14 @@
+package ac.swen501.bram.BugWorld;
+
+import java.util.Comparator;
+
+public class ComparatorOfBug implements Comparator<Bug>{
+
+	int bugX = 0, bugY = 0;
+	
+	@Override
+	public int compare(Bug o1, Bug o2) {
+		return 0;
+	}
+
+}
