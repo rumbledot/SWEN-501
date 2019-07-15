@@ -12,12 +12,42 @@ public class Wagon <Q> {
 		this.value = val;
 	}
 	
-	public void addWagon(Wagon<Q> next) {
+	public void addNextWagon(Wagon<Q> next) {
 		this.next = next;
 	}
 	
 	public Wagon<Q> getNextWagon() {
 		return next;
+	}
+	// 5
+	public int size() {
+		if (this.getNextWagon() == null) return 1;
+		
+		return 1 + next.size();
+	}
+	// 7
+	public void insertAfter(Wagon<Q> prevWagon) {
+		Wagon<Q> oldNextWagon = prevWagon.getNextWagon();
+		prevWagon.addNextWagon(this);
+		this.addNextWagon(oldNextWagon);
+	}
+	// 8
+	public Wagon<Q> lastWagon(Wagon<Q> w) {
+		if (w.getNextWagon() == null) return w;
+		return lastWagon(w.getNextWagon());
+	}
+	// 9
+	public Wagon<Q> findWagonWithIndex(int i) {
+		if (this != null && this.getIndex() == i) return this;
+		//else if (this == null) return null;
+		else if (this.getNextWagon() != null) return this.getNextWagon().findWagonWithIndex(i);
+		return null;
+	}
+	
+	public int findWagonWithValue(Q value) {
+		if (this.getValue().equals(value)) return this.getIndex();
+		else if (this.getNextWagon() != null) return this.getNextWagon().findWagonWithValue(value);
+		return -1;
 	}
 	
 	public void setIndex(int i) {
@@ -27,30 +57,12 @@ public class Wagon <Q> {
 	public int getIndex() {
 		return this.index;
 	}
-	
-	public int size() {
-		if (this.getNextWagon() == null) return 1;
 		
-		return 1 + next.size();
-	}
-	
-	public Wagon<Q> lastWagon(Wagon<Q> w) {
-		if (w.getNextWagon() == null) return w;
-		return lastWagon(w.getNextWagon());
-	}
-	
-	public int findWagon(Q value) {
-		if (this.getNextWagon().getValue().equals(value)) return this.getIndex();
-		return this.getNextWagon().findWagon(value);
-	}
-	
-	public void insertAfter(Wagon<Q> prevWagon) {
-		Wagon<Q> oldNextWagon = prevWagon.getNextWagon();
-		prevWagon.addWagon(this);
-		this.addWagon(oldNextWagon);
-	}
-	
 	public Q getValue() {
 		return value;
+	}
+	
+	public void changeValue(Q value) {
+		this.value = value;
 	}
 }

@@ -36,15 +36,21 @@ public class Main {
 		Wagon<Integer> newCabin1 = new Wagon<>(6);
 		newCabin1.addWagon(newCabin);*/
 		
+		/**
+		 * 
+		 * TRAIN AND WAGON EXERCISE
+		 * 
+		 */
+		
 		Wagon<String> cabin1 = new Wagon<>("A");
 		Wagon<String> cabin2 = new Wagon<>("B");
-		cabin1.addWagon(cabin2);
+		cabin1.addNextWagon(cabin2);
 		Wagon<String> cabin3 = new Wagon<>("C");
-		cabin2.addWagon(cabin3);
+		cabin2.addNextWagon(cabin3);
 		Wagon<String> cabin4 = new Wagon<>("D");
-		cabin3.addWagon(cabin4);
+		cabin3.addNextWagon(cabin4);
 		Wagon<String> newCabin = new Wagon<>("w");
-		newCabin.addWagon(cabin1);
+		newCabin.addNextWagon(cabin1);
 		Wagon<String> newCabin1 = new Wagon<>("x");
 		newCabin1.insertAfter(cabin2);
 		
@@ -65,10 +71,23 @@ public class Main {
 		
 		System.out.println(train.printWagons(newCabin));
 		
-		Wagon<String> selectedWagon = train.getWagon(newCabin, 5);
-		System.out.println(selectedWagon.getValue());
+		Wagon<String> selectedWagon = train.getWagon(7);
+		if (selectedWagon != null) {
+			System.out.println(selectedWagon.getValue());
+		} else {
+			System.out.println("Wagon not found at index");
+		}
 		
-		System.out.println(train.findWagon("z"));
+		System.out.println(train.findWagon("E"));
+		//System.out.println(train.findWagon("A"));
+		//System.out.println(train.getWagon(2));
+		//System.out.println(train.getWagon(train.findWagon("A")));
+		System.out.println(train.get(2));
+		train.remove(2);
+		System.out.println(train.printWagons(newCabin));
+		
+		train.insert(6, "f");
+		System.out.println(train.printWagons(newCabin));
 		
 	}
 
