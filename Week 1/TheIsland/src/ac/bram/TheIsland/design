@@ -1,0 +1,83 @@
+THE ISLAND
+
+>Class:
+>>EntryPoint
+	*Where everything created.
+	*Method createIsland
+		All variables initialize here
+		TheIsland created here
+	*Method updateIsland
+		Main loop 
+		that govern creation of a new Entity if necessary and put it to TheIsland
+		calling TheIsland update method that will govern entities behaviors
+	*Method EndIsland
+		Called when Main loop is ended 
+	
+>>TheIsland
+	*Where all entities lives in an ArrayList<Entity> entities
+	*2D array for geoFeatures
+	*2D array for plants
+	*2D array for animals
+	*Where every entities behavior updated 
+	*Method putEntity
+		EntryPoint will pass a newly created Entity to TheIsland using this method
+	*ClearTheIsland
+		clearing all TheIsland 2D arrays filling it with a default value
+	*UpdateTheIsland
+		scroll thru all entities types and update its behaviors accordingly
+		and put then in their respective 2D array
+	*DrawTheIsland
+		print 2D array to console
+		start from geoFeatures
+		plants
+		animals
+
+>>Entity
+	*Parent class for all living & non-living objects
+	*keeping the x, y values
+	
+	>>>Animal implements Entity
+	*Parent class for all living objects
+	*Flying, Amphibian, Land, Water behavior will be govern in each Animal
+	*In general there will be 2 types of Animal
+	*keeping type of animal
+	*capabilities
+	*foraging radius
+	*constricted to a certain geoFeature
+	*energy
+	*booleans of isAlive, isHungry, haveTarget, isTargeted, isThristy
+	*the booleans will govern Animal move method 
+	
+	>>>>Herbivore implements Animal
+	*Animal that target Plant object
+	
+	>>>>Carnivore implements Animal
+	*Animal that target Herbivore
+	
+	>>>Plant implements Entity
+	*Parent class for all plants objects
+	
+	>>>>Tree implements Plant
+	*A 'stronger' type of Plant
+	*slow regeneration
+	*high health
+	*char 'T'
+	
+	>>>>Shrubs implements Plant
+	*A 'weaker' type of Plant
+	*faster regeneration
+	*low health
+	*char 'v'
+	
+	>>>GeoFeature
+	*not a class, each feature represented by different char
+	*predefined width and height
+	*not changing
+	*set at EntryPoint initIsland method with a predefined values and pass it to TheIsland class
+	
+	>>>>Land
+	*represented by '.'
+	>>>>Water
+	*represented by '~'
+	>>>>Rock
+	*represented by 'o'
