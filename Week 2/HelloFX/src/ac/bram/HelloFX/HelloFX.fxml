@@ -28,12 +28,12 @@
 				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
 			</rowConstraints>
 			<children>
-				<ListView id="listCourse" fx:id="listCourse" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+				<ListView id="listCourse" fx:id="listCourse" onMouseClicked="#clickSelectCourse" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
 					<GridPane.margin>
 						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
 					</GridPane.margin>
 				</ListView>
-				<TreeView id="listStudent" fx:id="listStudent" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+				<TreeView id="listStudent" fx:id="listStudent" onMouseClicked="#clickSelectStudent" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
 					<GridPane.margin>
 						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
 					</GridPane.margin>

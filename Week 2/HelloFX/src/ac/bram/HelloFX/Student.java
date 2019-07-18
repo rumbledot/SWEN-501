@@ -11,6 +11,10 @@ public class Student {
 		this.name = n;
 	}
 	
+	public int ID() {
+		return this.ID;
+	}
+	
 	public String name() {
 		return this.name;
 	}
