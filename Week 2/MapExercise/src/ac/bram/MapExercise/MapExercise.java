@@ -64,6 +64,7 @@ public class MapExercise {
 				break;
 			}
 		} while (opt != 0);
+		
 	}
 
 	private void addCourse() {
@@ -95,19 +96,29 @@ public class MapExercise {
 	}
 
 	private void listStudents() {
+		System.out.println("---------------");
 		System.out.println("Active students");
 		System.out.println("---------------");
 		for (Map.Entry<Integer, Student> s : students.entrySet()) {
 			s.getValue().print();
 		}
+		int size = students.size();
+		System.out.println("---------------");
+		System.out.println("Total : " + size);
+		System.out.println("---------------");
 	}
 
 	private void listCourses() {
+		System.out.println("-----------------");
 		System.out.println("Available courses");
 		System.out.println("-----------------");
 		for (Map.Entry<String, Course> c : courses.entrySet()) {
 			c.getValue().print();
 		}
+		int size = courses.size();
+		System.out.println("---------------");
+		System.out.println("Total : " + size);
+		System.out.println("---------------");
 	}
 
 	private void enrolledAStudent() {
@@ -158,6 +169,7 @@ public class MapExercise {
 	private void inquireStudent() {
 		int ID = 0;
 		this.listStudents();
+		System.out.println("--------------------");
 		System.out.println("Student by ID / Name");
 		System.out.println("--------------------");
 		String i = input.next();
@@ -194,6 +206,7 @@ public class MapExercise {
 
 	private void inquireCourse() {
 		this.listCourses();
+		System.out.println("-------------");
 		System.out.println("Course's name");
 		System.out.println("-------------");
 		String name = input.next();
@@ -209,10 +222,11 @@ public class MapExercise {
 	private void doLoad() {
 		Student s = null;
 		Course c = null;
-		//int total = 0;
+		
+		System.out.println("----------------");
 		System.out.println("Load a data file");
 		System.out.println("----------------");
-		String name = input.next();
+		//String name = input.next();
 
 		try {
 			String fileName = "C:/Users/Abram/Documents/MSwDev 2019/SWEN 501/Week 2/MapExercise/src/ac/bram/MapExercise/data.txt";
@@ -222,9 +236,7 @@ public class MapExercise {
 			while (sc.hasNext()) {
 
 				String lines = sc.nextLine().trim();
-				//System.out.println(lines);
 				String[] line = lines.split(" ");
-				//System.out.println(line[0] + " " + line[1] + " " + line[2] + " " + line[3]);
 					
 				// GET THE COURSE NAME
 				String course = line[0].toLowerCase();
@@ -233,77 +245,42 @@ public class MapExercise {
 					courses.put(course, c);
 				} else {
 					c = courses.get(course);
-					/*if(c.name().equalsIgnoreCase("WRIT101")) {
-						System.out.println(s.name());
-					}*/
 				}
-				
-				//System.out.println(c.name());
-
 				// GET THE NAME
 				String i = line[2].toLowerCase();
 				String j = line[3].toLowerCase();
 				String f = i + " " + j;
-				
-				/*if(c.name().equalsIgnoreCase("WRIT101")) {
-					System.out.println(i + " " + j + " " + f);
-				}*/
 
 				if (byFullNameStudents.containsKey(f)){
 					s = byFullNameStudents.get(f);
-					/*if(c.name().equalsIgnoreCase("WRIT101")) {
-						System.out.println(s.name());
-					}*/
 				} else if (byFirstNameStudents.containsKey(i) && byLastNameStudents.containsKey(j)) {
 					s = byLastNameStudents.get(j);
 				} else {
 					s = new Student(line[2] + " " + line[3]);
-					//System.out.println("New student");
-					//total++;
 					students.put(s.ID(), s);
 					byFullNameStudents.put(f, s);
 					byFirstNameStudents.put(i, s);
 					byLastNameStudents.put(j, s);
 				}
-				/*
-				if(f.equalsIgnoreCase("alan butler") && course.equalsIgnoreCase("writ101")) {
-					System.out.println(c.name());
-				}*/
-				
-				//System.out.println(s.name());
-				//System.out.println(line[1]);
 				
 				// GET THE MARK
 				if (line[1].contentEquals("-")) {
 					s.enrollTo(c);
 					c.enrolled(s);
-					/*if(c.name().equalsIgnoreCase("WRIT101")) {
-						System.out.println(s.name());
-					}*/
-				} else { 
-					//System.out.println(line[1]);
+				} else {
 					s.enrollTo(c);
 					c.enrolled(s);
 					s.finishACourse(c, line[1]);
 					c.passed(s, line[1]);
-					/*if(c.name().equalsIgnoreCase("WRIT101")) {
-						System.out.println(s.name());
-					}*/
 				}
-				/*
-				if(f.equalsIgnoreCase("alan butler")) {
-					s.printActiveInCourse();
-					s.finishedCourses();
-				}
-				*/
-				//System.out.println(line[0] + " " + line[1] + " " + line[2] + " " + line[3]);
 				
 			}
+			sc.close();
 
 		} catch (FileNotFoundException e) {
 			System.out.println("File not exist");
 		}
-		//System.out.println(students.size() + " " + total);
+		
 	}
 
 	public static void main(String[] args) {

@@ -61,7 +61,7 @@ public class Student {
 		} else {
 			System.out.println("Student not enrolled in " + c.name());
 		}*/
-		//this.finishedCourses.put(c, grade);
+		//this.finishedCourses.put(c, grade);y
 		if(this.finishedCourses.get(c) == null) { 
 			this.finishedCourses.put(c, new ArrayList<String>()); 
 			}

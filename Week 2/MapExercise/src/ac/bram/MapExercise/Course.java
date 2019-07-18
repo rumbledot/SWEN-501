@@ -36,11 +36,18 @@ public class Course {
 	}
 	
 	public void printStudents() {
-		System.out.println("Student enrolled in " + this.name);
-		System.out.println("--------------------------------");
+		int size = enrolledStudents.size();
+		ArrayList<String> g = new ArrayList<String>();
+		System.out.println(size + " students enrolled in " + this.name);
+		System.out.println("-----------------------------------------");
 		for (Student s : enrolledStudents) {
 			System.out.println("> " + s.ID() + " : " + s.name() );
-			System.out.println("  " + passedStudents.get(s));
+			g = this.passedStudents.get(s);
+			if (g == null) { 
+				System.out.println("  n/a"); 
+			} else {
+				System.out.println("  " + g);
+			}
 		}
 	}
 	
