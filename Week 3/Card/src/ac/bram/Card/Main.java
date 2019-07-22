@@ -10,9 +10,8 @@ public class Main {
 	Scanner input = new Scanner(System.in);
 
 	public Main() {
-		//this.createDeck();
-		//this.mainMenu();
-		new BlackJack();
+		this.createDeck();
+		this.mainMenu();
 	}
 
 	private void mainMenu() {

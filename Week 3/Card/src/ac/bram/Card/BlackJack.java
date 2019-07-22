@@ -31,15 +31,6 @@ public class BlackJack {
 		cards = d.getCards();
 		deck = d.getDeck();
 		this.deal();
-		this.conclusion();
-	}
-
-	private void conclusion() {
-		System.out.println("------------");
-		System.out.println(" CONCLUSION ");
-		System.out.println("------------");
-		System.out.println(message);
-		System.out.println("------------");
 	}
 
 	private void deal() {
@@ -58,9 +49,6 @@ public class BlackJack {
 				playerHand.addCard(this.drawRandomCard());
 				this.showHand();
 				System.out.println();
-
-				this.countPlayerValue();
-				System.out.println(playerValue);
 				
 				//discard a card
 				System.out.println("(r)eveal? (s)kip? discard a card (0 - " + (playerHand.handSize() - 1) +")?");
@@ -71,15 +59,17 @@ public class BlackJack {
 						playerHand.discard(i);
 						
 					}
-				} else if (ui.equals("r")) {
+				} else if (ui.equals("reveal") || ui.equals("r")) {
 					this.revealCards();
-				} else {}
+				} else {
+					
+				}
 				this.showHand();
 				this.countPlayerValue();
-				System.out.println(playerValue);
+				//System.out.println(playerValue);
 				System.out.println();
 				
-			} else if (ui.equals("reveal")) {
+			} else if (ui.equals("reveal") || ui.equals("r")) {
 				this.revealCards();
 			}
 			
@@ -98,7 +88,7 @@ public class BlackJack {
 			
 			if (computerValue == 21 ) {
 				this.revealCards();
-			} else if (computerValue < 11) {
+			} else if (computerValue < 17) {
 				computerHand.addCard(this.drawRandomCard());
 			} else if (computerValue > 21) {
 				computerHand.discardSmallest();
@@ -138,15 +128,24 @@ public class BlackJack {
 	}
 	
 	private void revealCards() {
-		System.out.println("Computer hand :");
+		System.out.println("------------");
+		System.out.println("  REVEALED  ");
+		System.out.println("------------");
+		System.out.println("Dealer's hand :");
 		computerHand.print();
 		System.out.println(computerValue);
+		System.out.println("------------");
 		System.out.println("Player's hand :");
 		playerHand.print();
 		this.countPlayerValue();
 		System.out.println(playerValue);
+		System.out.println("------------");
 		play = false;
-		if (playerValue > computerValue) {
+		this.conclusion();
+	}
+	
+	private void conclusion() {
+		if (playerValue <= winning && playerValue > computerValue) {
 			win = true;
 			message = "You WIN!!";
 		} else if (playerValue == computerValue) {
@@ -155,6 +154,9 @@ public class BlackJack {
 			win = false;
 			message = "You LOSE!!";
 		}
+		System.out.println(message);
+		System.out.println("------------");
+		new Main();
 	}
 
 	private Card drawRandomCard() {
@@ -175,9 +177,12 @@ public class BlackJack {
 	}
 
 	private void shuffle() {
+		
 		Card draw = null;
 		// shuffle for player
+		
 		for (int a = 0; a < playerHand.minCard(); a++) {
+			/*
 			do {
 				int i = (int)(Math.random() * cards.size());
 				draw = cards.get(i);
@@ -186,9 +191,15 @@ public class BlackJack {
 			deck.put(draw, true);
 			playerHand.addCard(draw);
 			cards.remove(draw);
+			*/
+			
+			Card c = d.draw();
+			playerHand.addCard(c);
 		}
+				
 		//shuffle for computer
 		for (int a = 0; a < computerHand.minCard(); a++) {
+			/*
 			do {
 				int i = (int)(Math.random() * cards.size());
 				draw = cards.get(i);
@@ -198,6 +209,10 @@ public class BlackJack {
 			computerHand.addCard(draw);
 			this.computerValue += draw.value();
 			cards.remove(draw);
+			*/
+			
+			Card c = d.draw();
+			computerHand.addCard(c);
 		}
 	}
 
