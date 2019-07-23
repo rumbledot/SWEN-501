@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Hand {
 
-	private ArrayList<Card> inHand;
+	protected ArrayList<Card> inHand;
 	private int minCard;
 
 	public Hand(int min) {
@@ -14,6 +14,10 @@ public class Hand {
 
 	public void addCard(Card c) {
 			this.inHand.add(c);
+	}
+	
+	public void discard(int i) {
+		inHand.remove(i);
 	}
 
 	public Card getCard(int i) {
@@ -45,23 +49,16 @@ public class Hand {
 		}
 	}
 
-	public void discard(int i) {
-		inHand.remove(i);
-	}
-
 	public void discardSmallest() {
 		Card smallest = inHand.get(0);
-		compare cc;
+		Compare cc = new Compare();
 		for (Card c : inHand) {
-			if (cc(smallest, c) == 1) {
+			if (cc.compare(smallest, c) == 1) {
 				smallest = c;
 			}
 		}
+		System.out.println(smallest.card());
 		inHand.remove(smallest);
 	}
 
-	private int cc(Card smallest, Card c) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }

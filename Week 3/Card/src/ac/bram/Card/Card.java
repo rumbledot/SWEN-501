@@ -1,6 +1,8 @@
 package ac.bram.Card;
 
-public class Card {
+import java.util.Comparator;
+
+public class Card implements Comparable<Card>{
 
 	private String suit;
 	private CardRank e;
@@ -15,6 +17,10 @@ public class Card {
 		return this.e.s() + this.suit;
 	}
 	
+	public String suit() {
+		return this.suit;
+	}
+	
 	public CardRank rank() {
 		return this.e;
 	}
@@ -26,4 +32,25 @@ public class Card {
 	public int value() {
 		return this.value;
 	}
+
+	@Override
+	public int compareTo(Card o) {
+		return (o.value - this.value);
+	}
+	
+	public static Comparator<Card> BySuit = new Comparator<Card>() {
+		
+		@Override
+        public int compare(Card c1, Card c2) {
+        	return c1.suit().compareTo(c2.suit());
+        }
+	};
+	
+	public static Comparator<Card> ByValueDescending = new Comparator<Card>() {
+		
+		@Override
+        public int compare(Card c1, Card c2) {
+        	return (c1.value - c2.value);
+        }
+	};
 }

@@ -62,20 +62,11 @@ public class Deck {
 		.forEach(rank -> {
 			Card c = new Card("♠", rank);
 			cards.add(c);
-		});
-		EnumSet.allOf(CardRank.class)
-		.forEach(rank -> {
-			Card c = new Card("♣", rank);
+			c = new Card("♣", rank);
 			cards.add(c);
-		});
-		EnumSet.allOf(CardRank.class)
-		.forEach(rank -> {
-			Card c = new Card("♥", rank);
+			c = new Card("♥", rank);
 			cards.add(c);
-		});
-		EnumSet.allOf(CardRank.class)
-		.forEach(rank -> {
-			Card c = new Card("♦", rank);
+			c = new Card("♦", rank);
 			cards.add(c);
 		});
 		this.shuffle();

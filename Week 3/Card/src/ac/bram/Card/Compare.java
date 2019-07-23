@@ -2,7 +2,7 @@ package ac.bram.Card;
 
 import java.util.Comparator;
 
-public class compare implements Comparator<Card>{
+public class Compare implements Comparator<Card>{
 
 	@Override
 	public int compare(Card o1, Card o2) {

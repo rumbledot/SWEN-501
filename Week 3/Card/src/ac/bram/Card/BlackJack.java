@@ -39,6 +39,7 @@ public class BlackJack {
 		this.shuffle();
 		this.showHand();
 		System.out.println();
+		
 		do {
 			// PLAYER'S TURN
 			System.out.println("draw? reveal? skip?");
@@ -46,7 +47,8 @@ public class BlackJack {
 			
 			if (ui.equals("draw")) {
 				// player drawing a card
-				playerHand.addCard(this.drawRandomCard());
+				Card c = d.draw();
+				playerHand.addCard(c);
 				this.showHand();
 				System.out.println();
 				
@@ -57,7 +59,6 @@ public class BlackJack {
 					int i = Integer.parseInt(ui);
 					if (i >= 0 && i < playerHand.handSize()) {
 						playerHand.discard(i);
-						
 					}
 				} else if (ui.equals("reveal") || ui.equals("r")) {
 					this.revealCards();
@@ -74,28 +75,31 @@ public class BlackJack {
 			}
 			
 			// COMPUTER'S TURN
-			for (int i = 0; i < computerHand.handSize(); i++) {
-				if (computerHand.getCard(i).rank().equals(r.one)) {
-					if (computerValue < 10) {
-						computerValue -= 1;
-						computerValue += 11;
-					} else {
-						computerValue -= 1;
-						computerValue += 1;
-					}
-				}
-			}
-			
+			//computerHand.print();
 			if (computerValue == 21 ) {
 				this.revealCards();
 			} else if (computerValue < 17) {
-				computerHand.addCard(this.drawRandomCard());
+				Card c = d.draw();
+				//System.out.println("computer draw" + c.card());
+				computerHand.addCard(c);
+				this.countComputerValue();
 			} else if (computerValue > 21) {
 				computerHand.discardSmallest();
+				this.countComputerValue();
 			} else {
 				if (Math.random() > 0.5) {
 					this.revealCards();
 				}
+			}
+			
+			//computer chance to discard
+			if (computerValue > 21) {
+				computerHand.discardSmallest();
+				this.countComputerValue();
+			}
+			//computer decide if it has good chance of winning
+			if (computerValue >= 18 && computerValue <= 21 ) {
+				this.revealCards();
 			}
 			
 		} while (play);
@@ -118,11 +122,11 @@ public class BlackJack {
 		computerValue = 0; haveAce = false;
 		for (int i = 0; i < computerHand.handSize(); i++) {
 			computerValue += computerHand.getCard(i).value();
-			if (playerHand.getCard(i).rank().equals(r.one)) haveAce = true;
+			if (computerHand.getCard(i).rank().equals(r.one)) haveAce = true;
 		}
 		
 		if (haveAce && computerValue <= 11) {
-			playerValue += 10;
+			computerValue += 10;
 		}
 		
 	}
@@ -133,6 +137,7 @@ public class BlackJack {
 		System.out.println("------------");
 		System.out.println("Dealer's hand :");
 		computerHand.print();
+		this.countComputerValue();
 		System.out.println(computerValue);
 		System.out.println("------------");
 		System.out.println("Player's hand :");
@@ -145,7 +150,7 @@ public class BlackJack {
 	}
 	
 	private void conclusion() {
-		if (playerValue <= winning && playerValue > computerValue) {
+		if ((playerValue <= winning && playerValue > computerValue) || computerValue > winning ) {
 			win = true;
 			message = "You WIN!!";
 		} else if (playerValue == computerValue) {
