@@ -1,8 +1,12 @@
 package ac.bram.Contacts;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Map.Entry;
 
 public class Main {
 
@@ -538,12 +542,113 @@ public class Main {
 		} while (nUI != 4);	}
 
 	private void doSave() {
-		
+		try {
+			String fileName = "data.txt";
+			PrintStream ps = new PrintStream(new File(fileName));
+			
+			ps.println("<PERSONS>");
+			ps.println(contacts.size());
+			Person p = null;
+			for (Map.Entry<String, Person> contact : contacts.entrySet()) {
+				
+				p = contact.getValue();
+				
+				ps.println(p.name());
+				
+				ArrayList<String> ph = new ArrayList<>();
+				ph = p.getPhone();
+				for (String phone : ph) {
+					ps.print(phone + " ");
+				}
+				ps.println();
+				
+				ph = p.getEmail();
+				for (String email : ph) {
+					ps.print(email + " ");
+				}
+				ps.println();
+				
+				ps.println(p.getAddress());
+				
+				ps.println(p.getBday());
+				
+				ps.println(p.getRelationship());
+				
+				ps.println(p.getGST());
+				
+				ps.println(p.seeNote());
+				
+				ps.println(p.getEmployer().name());
+				
+				Map<String, Person> employee = p.listEmployee();
+				for (Map.Entry<String, Person> employ : employee.entrySet()) {
+					ps.print(employ.getKey());
+				}
+				ps.println();
+
+			}
+			
+			ps.println("<BUSINESS>");
+			ps.println(businesses.size());
+			Business b = null;
+			for (Entry<String, Business> contact : businesses.entrySet()) {
+			
+				b = contact.getValue();
+				
+				ps.println(b.name());
+				
+				ArrayList<String> ph = new ArrayList<>();
+				ph = b.getPhone();
+				for (String phone : ph) {
+					ps.print(phone + " ");
+				}
+				ps.println();
+				
+				ph = b.getEmail();
+				for (String email : ph) {
+					ps.print(email + " ");
+				}
+				ps.println();
+				
+				ps.println(b.getAddress());
+				
+				ps.println(b.seeNote());
+				
+			}
+			
+			ps.println("<FRIEND>");
+			ps.println(friends.size());
+			p = null;
+			for (Map.Entry<String, Person> contact : friends.entrySet()) {
+				ps.println(contact.getKey());
+			}
+			
+			ps.println("<FAMILY>");
+			ps.println(families.size());
+			p = null;
+			for (Map.Entry<String, Person> contact : families.entrySet()) {
+				ps.println(contact.getKey());
+			}
+			
+			ps.close();
+			
+		} catch (FileNotFoundException e) {
+			
+		}
 
 	}
 
 	private void doLoad() {
-		// TODO Auto-generated method stub
+		try {
+			String fileName = "data.txt";
+			Scanner sc = new Scanner(new File(fileName));
+			
+			
+			
+			sc.close();
+		} catch (FileNotFoundException e) {
+			
+		}
 
 	}
 
