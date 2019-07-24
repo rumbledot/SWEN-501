@@ -69,7 +69,7 @@ public class Main {
 		Wagon<String> newCabin3 = new Wagon<>("z");
 		train.append(newCabin3);
 		
-		System.out.println(train.printWagons(newCabin));
+		System.out.println(train.printWagons(train.head));
 		
 		Wagon<String> selectedWagon = train.getWagon(7);
 		if (selectedWagon != null) {
@@ -82,6 +82,8 @@ public class Main {
 		//System.out.println(train.findWagon("A"));
 		//System.out.println(train.getWagon(2));
 		//System.out.println(train.getWagon(train.findWagon("A")));
+		System.out.println(train.printWagons(newCabin));
+		
 		System.out.println(train.get(2));
 		train.remove(2);
 		System.out.println(train.printWagons(newCabin));
@@ -89,6 +91,19 @@ public class Main {
 		train.insert(6, "f");
 		System.out.println(train.printWagons(newCabin));
 		
+		Train<String> t = train.reversed();
+		System.out.println(t.print());
+		
+		train.reverse();
+		System.out.println(train.print());
+		
+	}
+	
+	public static <T> void printWagonChain(Wagon<T> w) {
+		while (w != null) {
+			System.out.println(w.getValue());
+			w = w.getNextWagon();
+		}
 	}
 
 	public static int fib(int n)
