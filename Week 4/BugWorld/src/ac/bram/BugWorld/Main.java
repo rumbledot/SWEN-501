@@ -32,15 +32,19 @@ import javafx.scene.text.Text;
 public class Main extends Application {
 
 	private int width = 400, height = 300;
-	private Scene s;
+	private static Scene s;
 	private BorderPane r;
 	private Group g;
 
 	private String[] herbiFiles = new String[] 
 			{ "C:/Users/Abram/Documents/MSwDev 2019/cow.png",
 			"C:/Users/Abram/Documents/MSwDev 2019/Sheep.png" };
+	private float[] herbiSize = new float[]
+			{ 25, 15 };
 
 	private ArrayList<Entity> entities = new ArrayList<>();
+	private ArrayList<Herbivore> herbivores = new ArrayList<>();
+	private static ArrayList<Plant> plants = new ArrayList<>();
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -57,13 +61,13 @@ public class Main extends Application {
 		addBug.setText("Add a bug");
 		v.getChildren().add(addBug);
 
-		Text lblBug = new Text();
-		lblBug.setText("Population : ");
-		v.getChildren().add(lblBug);
+		Text lblInfo = new Text();
+		lblInfo.setText("Population : ");
+		v.getChildren().add(lblInfo);
 
-		Text lblBugPopulation = new Text();
-		lblBugPopulation.setText("0");
-		v.getChildren().add(lblBugPopulation);
+		Text lblPopulation = new Text();
+		lblPopulation.setText("0");
+		v.getChildren().add(lblPopulation);
 
 		g.getChildren().add(v);
 
@@ -77,10 +81,22 @@ public class Main extends Application {
 		KeyFrame frame = new KeyFrame(Duration.millis(16), new EventHandler<ActionEvent>() {
 
 			@Override
-			public void handle(ActionEvent arg0) {
-				for (Entity b : entities) {
-					if (b instanceof Herbivore)	((Herbivore) b).move();
-					if (b instanceof Plant) ((Plant) b).grow();
+			public void handle(ActionEvent e) {
+				for (Herbivore b : herbivores) {
+
+					/*
+					 * Bounds bound = b.bug().localToScene(b.bug().getBoundsInLocal());
+					 * 
+					 * if (bound.getCenterX() < 0.0f || bound.getCenterX() > s.getWidth()) {
+					 * b.setDx(-b.dx()); } if (bound.getCenterY() < 0.0f || bound.getCenterY() >
+					 * s.getHeight()) { b.setDy(-b.dy()); }
+					 * 
+					 * b.setX(b.X() + b.dx()); b.setY(b.Y() + b.dy());
+					 */
+					b.move();
+					b.graze();
+					b.update();
+
 				}
 
 				int ran = (int)(Math.random() * 100);
@@ -91,6 +107,7 @@ public class Main extends Application {
 					Plant b = new Plant(bx, by);
 					g.getChildren().add(b.plant());
 					b.getScene(s);
+					plants.add(b);
 				}
 
 			}
@@ -103,11 +120,11 @@ public class Main extends Application {
 				double bx = Math.random() * s.getWidth() + 1;
 				double by = Math.random() * s.getHeight() + 1;
 				int r = (int)(Math.random() * herbiFiles.length);
-				Herbivore b = new Herbivore(bx, by, Color.BLUE, herbiFiles[r], 30, 1.5f);
+				Herbivore b = new Herbivore(bx, by, Color.BLUE, herbiFiles[r], herbiSize[r], 1.5f);
 				g.getChildren().add(b.bug());
 				b.getScene(s);
-				entities.add(b);
-				lblBugPopulation.setText(String.valueOf(entities.size()));
+				herbivores.add(b);
+				lblPopulation.setText(String.valueOf(herbivores.size()));
 			}
 
 		});
@@ -120,28 +137,27 @@ public class Main extends Application {
 				double mY = e.getSceneY();
 				Entity toBeRemove = null;
 
-				for (Entity b : entities) {
+				for (Herbivore b : herbivores) {
 
-					if (b instanceof Herbivore) {
-						Bounds pos = ((Herbivore) b).bug().localToScene(
-								((Herbivore) b).bug().getBoundsInLocal() );
+					Bounds pos = (b.bug().localToScene(
+							b.bug().getBoundsInLocal() ));
 
-						double aa = mX - pos.getCenterX();
-						double bb = mY - pos.getCenterY();
-						double cc = Math.sqrt(aa*aa + bb*bb);
+					double aa = mX - pos.getCenterX();
+					double bb = mY - pos.getCenterY();
+					double cc = Math.sqrt(aa*aa + bb*bb);
 
-						if (cc <= ((Herbivore) b).r() * 3) {
+					if (cc <= b.r() * 3) {
 
-							if (((Herbivore) b).bug().getParent() instanceof Group) {
-								((Group) ((Herbivore) b).bug().getParent()).getChildren().remove(((Herbivore) b).bug());
-								toBeRemove = b;
-							}
+						if (b.bug().getParent() instanceof Group) {
+							((Group) b.bug().getParent()).getChildren().remove(b.bug());
+							toBeRemove = b;
 						}
 					}
 
+
 					if (toBeRemove != null) {
 						entities.remove(toBeRemove);
-						lblBugPopulation.setText(String.valueOf(entities.size()));
+						lblPopulation.setText(String.valueOf(entities.size()));
 					}
 				}
 			}
@@ -164,6 +180,14 @@ public class Main extends Application {
 		g.getChildren().add(b.bug());
 		b.getScene(s);
 		entities.add(b);
+	}
+	
+	public static ArrayList<Plant> getPlants() {
+		return plants;
+	}
+	
+	public static Scene getScene() {
+		return s;
 	}
 
 	public static void main(String[] args) {
