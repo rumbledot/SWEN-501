@@ -68,6 +68,10 @@ public class Entity {
 	public void notTargeted() {
 		this.isTargeted = false;
 	}
+	
+	public void beingTargeted() {
+		this.isTargeted = true;
+	}
 
 	public Boolean isAlive() {
 		return isAlive;

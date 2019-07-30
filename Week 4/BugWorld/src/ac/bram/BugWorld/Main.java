@@ -82,6 +82,13 @@ public class Main extends Application {
 
 			@Override
 			public void handle(ActionEvent e) {
+
+				removeDeadEntity();
+
+				for (Plant b : plants) {
+					b.grow();
+				}
+				
 				for (Herbivore b : herbivores) {
 
 					/*
@@ -111,6 +118,43 @@ public class Main extends Application {
 				}
 
 			}
+
+			private void removeDeadEntity() {
+				ArrayList<Herbivore> toBeRemoved = new ArrayList<>();
+
+				for (Herbivore b : herbivores) {
+					if (!b.isAlive()) {
+						toBeRemoved.add(b);
+					}
+				}
+				lblPopulation.setText(String.valueOf(herbivores.size()));
+
+				if (toBeRemoved.size() > 0) {
+					for (Herbivore b : toBeRemoved) {
+						herbivores.remove(b);
+						if (b.bug().getParent() instanceof Group) {
+							((Group) b.bug().getParent()).getChildren().remove(b.bug());
+						}
+					}
+				}
+
+				ArrayList<Plant> toBeRemoved1 = new ArrayList<>();
+
+				for (Plant b : plants) {
+					if (!b.isAlive()) {
+						toBeRemoved1.add(b);
+					}
+				}
+
+				if (toBeRemoved1.size() > 0) {
+					for (Plant b : toBeRemoved1) {
+						plants.remove(b);
+						if (b.plant().getParent() instanceof Group) {
+							((Group) b.plant().getParent()).getChildren().remove(b.plant());
+						}
+					}
+				}
+			}
 		});
 
 		addBug.setOnAction(new EventHandler<ActionEvent>() {
@@ -123,6 +167,7 @@ public class Main extends Application {
 				Herbivore b = new Herbivore(bx, by, Color.BLUE, herbiFiles[r], herbiSize[r], 1.5f);
 				g.getChildren().add(b.bug());
 				b.getScene(s);
+
 				herbivores.add(b);
 				lblPopulation.setText(String.valueOf(herbivores.size()));
 			}
@@ -156,8 +201,8 @@ public class Main extends Application {
 
 
 					if (toBeRemove != null) {
-						entities.remove(toBeRemove);
-						lblPopulation.setText(String.valueOf(entities.size()));
+						herbivores.remove(toBeRemove);
+						lblPopulation.setText(String.valueOf(herbivores.size()));
 					}
 				}
 			}
@@ -181,11 +226,11 @@ public class Main extends Application {
 		b.getScene(s);
 		entities.add(b);
 	}
-	
+
 	public static ArrayList<Plant> getPlants() {
 		return plants;
 	}
-	
+
 	public static Scene getScene() {
 		return s;
 	}

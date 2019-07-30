@@ -47,4 +47,9 @@ public class Plant extends Entity {
 		if (levelGrow <= 0) this.dead();
 	}
 
+	public int getEnergy() {
+		if (levelGrow < 0) return 0;
+		return levelGrow;
+	}
+	
 }

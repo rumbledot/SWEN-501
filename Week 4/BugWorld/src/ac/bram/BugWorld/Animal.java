@@ -1,6 +1,7 @@
 package ac.bram.BugWorld;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Scene;
@@ -18,7 +19,7 @@ public class Animal extends Entity{
 	private float dx = -1.5f, dy = -1.5f;
 	private float speed = 1.5f;
 	private float r = 5.0f;
-	private int maxFull = 100, hungryLevel = 100;
+	private int maxFull = 200, hungryLevel = 200;
 	private Entity target;
 	private double tX, tY;
 
@@ -46,9 +47,9 @@ public class Animal extends Entity{
 	public void move() {
 
 		hungryLevel--;
-		System.out.println(hungryLevel);
+		//System.out.println(hungryLevel);
 
-		if (hungryLevel <= 50) gettingHungry();
+		if (hungryLevel <= 100) gettingHungry();
 		if (hungryLevel <= 0) dead();
 
 		if(isAlive()) {
@@ -70,6 +71,33 @@ public class Animal extends Entity{
 	public void update() {
 		this.setX(this.X() + dx());
 		this.setY(this.Y() + dy());
+
+		if (isHungry() & haveTarget()) {
+			Bounds b = bug().localToScene(bug().getBoundsInLocal());
+			ArrayList<Plant> food = Main.getPlants();
+			Plant toBeRemoved = null;
+			
+			for (Plant f : food) {
+				
+				Bounds fXY = f.plant().localToScene(f.plant().getBoundsInLocal());
+				
+				double sX = fXY.getCenterX() - 30;
+				double sY = fXY.getCenterY() - 30;
+				double eX = fXY.getCenterX() + 30;
+				double eY = fXY.getCenterY() + 30;
+				
+				if (b.getCenterX() > sX && b.getCenterX() < eX &&
+						b.getCenterY() > sY && b.getCenterY() < eY) {
+					System.out.println(hungryLevel + " : " + f.getEnergy());
+					hungryLevel += f.getEnergy();
+					f.getEaten(maxFull - hungryLevel);
+					f.notTargeted();
+					notHungry(); noTarget();
+					System.out.println(hungryLevel);
+				}
+			}
+		}
+
 	}
 
 	public float dx() {
@@ -140,16 +168,16 @@ public class Animal extends Entity{
 		target = t;
 		gotTarget();
 	}
-	
+
 	public void setTargetPos(double x, double y) {
 		tX = x;
 		tY = y;
 	}
-	
+
 	public double targetX() {
 		return tX;
 	}
-	
+
 	public double targetY() {
 		return tY;
 	}
