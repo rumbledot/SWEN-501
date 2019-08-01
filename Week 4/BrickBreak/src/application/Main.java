@@ -36,6 +36,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 public class Main extends Application {
@@ -49,6 +51,8 @@ public class Main extends Application {
 	private Text txtScoreNum;
 	private Text txtLifeNum;
 	private Text txtPowerActive;
+	private Text txtWinLose;
+	private Timeline timeline;
 
 	private Boolean ballFall = true;
 	private Boolean scoreBoost = false;
@@ -60,8 +64,8 @@ public class Main extends Application {
 	private int life = 3;
 	private int counter;
 	private double ballDX = 0.0;
-	private double ballDY = 6.0;
-	private double speed = 6.0;
+	private double ballDY = 2.0;
+	private double speed = 5.0;
 	private double batX, oldBatX;
 	private double batSpeed = 0;
 
@@ -73,7 +77,6 @@ public class Main extends Application {
 	
 	public Color[] brickColors = new Color[] {
 			Color.DARKSLATEBLUE, Color.DARKOLIVEGREEN, Color.DARKRED, Color.DARKKHAKI, Color.YELLOW };
-
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -91,6 +94,38 @@ public class Main extends Application {
 
 				moveStars();
 				
+				powerUpCounter();
+
+				onBallCollision();
+
+				onBrickCollision();
+
+				onPowerUps();
+
+				if (ballFall) {
+					ballDY = +speed;
+				} else {
+					ballDY = -speed;
+				}
+
+				ball.setCenterX(ball.getCenterX() + ballDX);
+				ball.setCenterY(ball.getCenterY() + ballDY);
+			}
+			
+			private void moveStars() {
+				for (Rectangle r : starFar) {
+					r.setY(r.getY() + 0.5);
+					if (r.getY() > background.getHeight()) r.setY(0);
+				}
+				
+				for (Rectangle r : starNear) {
+					r.setY(r.getY() + 1);
+					if (r.getY() > starField.getHeight()) r.setY(0);
+				}
+				
+			}
+
+			private void powerUpCounter() {
 				if (counter > 0) {
 					counter--;
 					System.out.println(counter);
@@ -102,8 +137,11 @@ public class Main extends Application {
 						bat.setFill(Color.BLUE);
 					}
 				}
-
-				if (ball.getCenterY() + ball.getRadius() >= bat.getY()) {
+			}
+			
+			private void onBallCollision() {
+				if (ball.getCenterY() + ball.getRadius() >= bat.getY() && 
+						ball.getCenterX() > bat.getX() && ball.getCenterX() < bat.getX() + 50) {
 					ballFall = !ballFall;
 
 					if (ball.getCenterX() - bat.getX() < 25) {
@@ -122,7 +160,61 @@ public class Main extends Application {
 
 				if (ball.getCenterX() - ball.getRadius() <= 0) ballDX = -ballDX;
 				if (ball.getCenterX() + ball.getRadius() >= playArea.getWidth()) ballDX = -ballDX;
+				
+				if (ball.getCenterY() + ball.getRadius() >= playArea.getHeight()) {
+					life--;
+					txtLifeNum.setText(String.valueOf(life));
+					
+					txtWinLose.setVisible(true);
+					txtWinLose.setText("OOOOPSIES! (press 'space' to continue)");
+					txtWinLose.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+					txtWinLose.setFill(Color.WHITE);
+					txtWinLose.setX((playArea.getWidth() / 2) - txtWinLose.getLayoutBounds().getWidth() / 2);
+					txtWinLose.setY((playArea.getHeight() / 2) - 20);
+					
+					pauseGame();
+					restartAfterLoseLife();
+				}
+			}
 
+			private void restartAfterLoseLife() {
+				ball.setCenterX(playArea.getWidth() / 2 - 8);
+				ball.setCenterY(playArea.getHeight() / 2 - 8);
+			}
+
+			private void onPowerUps() {
+				ArrayList<PowerUp> tobeRemoved1 = new ArrayList<>();
+				for (PowerUp p : powerups) {
+					p.move();
+					if (p.getX() >= bat.getX() && p.getX() + 20 <= bat.getX() + 50 && 
+							p.getY() >= bat.getY()) {
+						tobeRemoved1.add(p);
+						if (p instanceof LifeUp) {
+							life++;
+							txtLifeNum.setText(String.valueOf(life));
+							counter = 10;
+							txtPowerActive.setText("LIFE UP!!");
+						}
+						if (p instanceof ScoreBoost) {
+							scoreBoost = true;
+							counter = 100;
+							txtPowerActive.setText("SCORE BOOST!!");
+						}
+					}
+					if (p.getY() >= playArea.getHeight()) {
+						tobeRemoved1.add(p);
+					}
+				}
+
+				if (tobeRemoved1.size() > 0) {
+					for (PowerUp b : tobeRemoved1) {
+						powerups.remove(b);
+						playArea.getChildren().remove(b);
+					}
+				}
+			}
+
+			private void onBrickCollision() {
 				ArrayList<Brick> tobeRemoved = new ArrayList<>();
 				for (Brick b : bricks) { 
 					if (ball.getCenterY() - ball.getRadius() <= b.getY() + 15 &&
@@ -154,71 +246,20 @@ public class Main extends Application {
 						playArea.getChildren().remove(b);
 					}
 				}
-
-				ArrayList<PowerUp> tobeRemoved1 = new ArrayList<>();
-				for (PowerUp p : powerups) {
-					p.move();
-					if (p.getX() >= bat.getX() && p.getX() + 20 <= bat.getX() + 50 && 
-							p.getY() >= bat.getY()) {
-						tobeRemoved1.add(p);
-						if (p instanceof LifeUp) {
-							life++;
-							txtLifeNum.setText(String.valueOf(life));
-							counter = 10;
-							txtPowerActive.setText("LIFE UP!!");
-						}
-						if (p instanceof ScoreBoost) {
-							scoreBoost = true;
-							counter = 100;
-							txtPowerActive.setText("SCORE BOOST!!");
-						}
-					}
-					if (p.getY() >= playArea.getHeight()) {
-						tobeRemoved1.add(p);
-					}
-				}
-
-				if (tobeRemoved1.size() > 0) {
-					for (PowerUp b : tobeRemoved1) {
-						powerups.remove(b);
-						playArea.getChildren().remove(b);
-					}
-				}
-
-				if (ballFall) {
-					ballDY = +speed;
-				} else {
-					ballDY = -speed;
-				}
-
-				ball.setCenterX(ball.getCenterX() + ballDX);
-				ball.setCenterY(ball.getCenterY() + ballDY);
-			}
-
-			private void moveStars() {
-				for (Rectangle r : starFar) {
-					r.setY(r.getY() + 0.5);
-					if (r.getY() > background.getHeight()) r.setY(0);
-				}
-				
-				for (Rectangle r : starNear) {
-					r.setY(r.getY() + 1);
-					if (r.getY() > starField.getHeight()) r.setY(0);
-				}
-				
 			}
 
 		});
 
 		sc.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
 			if(key.getCode()==KeyCode.A) {
-				//playArea.getChildren().remove(bricks.get(4));
+				startGame();
 			}
 			if(key.getCode()==KeyCode.D) {
 				System.out.println("You pressed D");
 			}
 			if(key.getCode()==KeyCode.SPACE) {
-				System.out.println("You pressed SPACE");
+				txtWinLose.setVisible(false);
+				startGame();
 			}
 		});
 
@@ -236,12 +277,20 @@ public class Main extends Application {
 
 		});
 
-		Timeline timeline = new Timeline();
+		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.setAutoReverse(true);
 		timeline.getKeyFrames().add(frame);
 		timeline.play();
 
+	}
+
+	private void pauseGame() {
+		timeline.pause();
+	}
+	
+	private void startGame() {
+		timeline.play();
 	}
 
 	private void setStage(Stage primaryStage) {
@@ -273,17 +322,20 @@ public class Main extends Application {
 						BackgroundRepeat.REPEAT,
 						BackgroundPosition.CENTER,
 						BackgroundSize.DEFAULT))));
+		txtWinLose = new Text();
+		txtWinLose.setVisible(false);
 
 		background.setPrefSize(width, height);
 		starField.setPrefSize(width, height);
 		
 		playArea.getChildren().add(background);
 		playArea.getChildren().add(starField);
+		background.getChildren().add(txtWinLose);
 
 		Label txtLive = new Label("Lives");
-		txtLifeNum = new Text("0");
+		txtLifeNum = new Text(String.valueOf(life));
 		Text txtScore = new Text("Score : ");
-		txtScoreNum = new Text("0");
+		txtScoreNum = new Text(String.valueOf(score));
 		txtPowerActive = new Text();
 		infoArea.setPadding(new Insets(4, 4, 4, 4));
 		infoArea.setSpacing(4);
