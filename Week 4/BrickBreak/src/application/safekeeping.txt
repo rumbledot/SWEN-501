@@ -1,0 +1,12 @@
+float fDistance = (float) Math.sqrt((ball.getCenterX() - bat.getX()) * (ball.getCenterX() - bat.getX()) + 
+							(ball.getCenterY() - bat.getY()) * (ball.getCenterY() - bat.getY()));
+					float nx = (float) (ball.getCenterX() - bat.getX() / fDistance);
+					float ny = (float) (ball.getCenterY() - bat.getY() / fDistance);
+					float tx = -ny;
+					float ty = nx;
+					float dpTan1 = (float) (ballDX * tx + ballDY * ty);
+					float dpNorm1 = (float) (ball.getCenterX() * nx + ball.getCenterY() * ny);
+					float dpNorm2 = (float) (bat.getX() * nx + bat.getY() * ny);
+					float m1 = (dpNorm1 * (10) + 2.0f * 5 * dpNorm2) / (10);
+					ballDX = Math.round(tx * dpTan1 + nx * m1);
+					ballDY = ty * dpTan1 + ny * m1;
