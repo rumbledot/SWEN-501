@@ -51,12 +51,14 @@ public class Main extends Application {
 	private Text txtScoreNum;
 	private Text txtLifeNum;
 	private Text txtPowerActive;
-	private Text txtWinLose;
+	private Text txtWinLose1;
+	private Text txtWinLose2;
 	private Timeline timeline;
 
 	private Boolean ballFall = true;
 	private Boolean scoreBoost = false;
 	private Boolean shooter = false;
+	private Boolean isAlive = true;
 
 	private double width = 320;
 	private double height = 500;
@@ -88,9 +90,13 @@ public class Main extends Application {
 		stars();
 
 		KeyFrame frame = new KeyFrame(Duration.millis(16), new EventHandler<ActionEvent>() {
-
+			
 			@Override
 			public void handle(ActionEvent e) {
+				
+				if (!isAlive) {
+					endGame();
+				}
 
 				moveStars();
 				
@@ -112,6 +118,22 @@ public class Main extends Application {
 				ball.setCenterY(ball.getCenterY() + ballDY);
 			}
 			
+			private void endGame() {
+				pauseGame();
+				txtWinLose1.setVisible(true);
+				txtWinLose1.setText("<<GAME OVER>>");
+				txtWinLose2.setVisible(true);
+				txtWinLose2.setText("press 'space' to restart");
+				txtWinLose1.setFont(Font.font("Pixelmania", FontWeight.BOLD, 13));
+				txtWinLose2.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+				txtWinLose1.setFill(Color.WHITE);
+				txtWinLose2.setFill(Color.WHITE);
+				txtWinLose1.setX((playArea.getWidth() / 2) - txtWinLose1.getLayoutBounds().getWidth() / 2);
+				txtWinLose1.setY((playArea.getHeight() / 2) - 40);
+				txtWinLose2.setX((playArea.getWidth() / 2) - txtWinLose2.getLayoutBounds().getWidth() / 2);
+				txtWinLose2.setY((playArea.getHeight() / 2) - 25);
+			}
+
 			private void moveStars() {
 				for (Rectangle r : starFar) {
 					r.setY(r.getY() + 0.5);
@@ -128,7 +150,6 @@ public class Main extends Application {
 			private void powerUpCounter() {
 				if (counter > 0) {
 					counter--;
-					System.out.println(counter);
 					bat.setFill(brickColors[counter % 3]);
 					if (counter <= 0) {
 						scoreBoost = false;
@@ -163,15 +184,26 @@ public class Main extends Application {
 				
 				if (ball.getCenterY() + ball.getRadius() >= playArea.getHeight()) {
 					life--;
+					if (life < 0) {
+						isAlive = false;
+						pauseGame();
+						endGame();
+					}
 					txtLifeNum.setText(String.valueOf(life));
 					
-					txtWinLose.setVisible(true);
-					txtWinLose.setText("OOOOPSIES! (press 'space' to continue)");
-					txtWinLose.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-					txtWinLose.setFill(Color.WHITE);
-					txtWinLose.setX((playArea.getWidth() / 2) - txtWinLose.getLayoutBounds().getWidth() / 2);
-					txtWinLose.setY((playArea.getHeight() / 2) - 20);
-					
+					txtWinLose1.setVisible(true);
+					txtWinLose1.setText("OOOOPSIES!");
+					txtWinLose2.setVisible(true);
+					txtWinLose2.setText("press 'space' to continue");
+					txtWinLose1.setFont(Font.font("Pixelmania", FontWeight.BOLD, 13));
+					txtWinLose2.setFont(Font.font("Arial", FontWeight.BOLD, 5));
+					txtWinLose1.setFill(Color.WHITE);
+					txtWinLose2.setFill(Color.WHITE);
+					txtWinLose1.setX((playArea.getWidth() / 2) - txtWinLose1.getLayoutBounds().getWidth() / 2);
+					txtWinLose1.setY((playArea.getHeight() / 2) - 40);
+					txtWinLose2.setX((playArea.getWidth() / 2) - txtWinLose2.getLayoutBounds().getWidth() / 2);
+					txtWinLose2.setY((playArea.getHeight() / 2) - 25);
+					ballDX = 0;
 					pauseGame();
 					restartAfterLoseLife();
 				}
@@ -258,8 +290,13 @@ public class Main extends Application {
 				System.out.println("You pressed D");
 			}
 			if(key.getCode()==KeyCode.SPACE) {
-				txtWinLose.setVisible(false);
-				startGame();
+				txtWinLose1.setVisible(false);
+				txtWinLose2.setVisible(false);
+				if (isAlive) {
+					startGame();
+				} else {
+					reStartGame();
+				}
 			}
 		});
 
@@ -283,6 +320,15 @@ public class Main extends Application {
 		timeline.getKeyFrames().add(frame);
 		timeline.play();
 
+	}
+
+	private void reStartGame() {
+		life = 3; score = 0;
+		ballDX = 0.0;
+		ballDY = 2.0;
+		isAlive = true;
+		gameObjects();
+		stars();
 	}
 
 	private void pauseGame() {
@@ -322,15 +368,18 @@ public class Main extends Application {
 						BackgroundRepeat.REPEAT,
 						BackgroundPosition.CENTER,
 						BackgroundSize.DEFAULT))));
-		txtWinLose = new Text();
-		txtWinLose.setVisible(false);
+		txtWinLose1 = new Text();
+		txtWinLose2 = new Text();
+		txtWinLose1.setVisible(false);
+		txtWinLose2.setVisible(false);
 
 		background.setPrefSize(width, height);
 		starField.setPrefSize(width, height);
 		
 		playArea.getChildren().add(background);
 		playArea.getChildren().add(starField);
-		background.getChildren().add(txtWinLose);
+		background.getChildren().add(txtWinLose1);
+		background.getChildren().add(txtWinLose2);
 
 		Label txtLive = new Label("Lives");
 		txtLifeNum = new Text(String.valueOf(life));
@@ -386,6 +435,7 @@ public class Main extends Application {
 	}
 
 	private void gameObjects() {
+		bricks.clear();
 		ball = new Ball(playArea.getWidth() / 2 - 8, playArea.getHeight() / 2 - 8);
 		bat = new Bat(playArea.getWidth() / 2 - 30, playArea.getHeight() - 30);
 		playArea.getChildren().addAll(ball, bat);
